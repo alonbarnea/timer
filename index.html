@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="theme-color" content="#000000">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Workout Timer</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="manifest" href="manifest.json">
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
+            }
+        </script>
+    </head>
+    <body>
+        <section class="workout">
+            <h1>Dumbbells</h1>
+            <h2 id="dumbbellsHeader"></h2>
+            <div class="timer">
+                <button id="dumbbells-timer" onclick="toggleDumbbellsTimer()"></button>
+                <button onclick="resetDumbbellsTimer()">R</button>
+            </div>
+        </section>
+        <section class="workout">
+            <h1>Planks</h1>
+            <h2 id="planksHeader"></h2>
+            <div class="timer">
+                <button id="planks-timer" onclick="togglePlanksTimer()"></button>
+                <button onclick="resetPlanksTimer()">R</button>
+            </div>
+        </section>
+        <section class="workout">
+            <h1>Side Planks</h1>
+            <h2 id="sidePlanksHeader"></h2>
+            <div class="timer">
+                <button id="side-planks-timer" onclick="toggleSidePlanksTimer()"></button>
+                <button onclick="resetSidePlanksTimer()">R</button>
+            </div>
+        </section>
+        <script src="script.js"></script>
+    </body>
+</html>
