@@ -1,31 +1,26 @@
-const baseRounds = 3;
-const baseInterval = 5;
-
-// not used
-const setWorkTime = 5;
-const setRestTime = 5;
-const numberOfSets = 3;
+const workoutRounds = 3;
+const workoutInterval = 30;
 
 const dumbbellsEndingSeconds = 2;
 const dumbbellsWarningSeconds = 8;
 
-const planksRounds = baseRounds;
+const planksRounds = workoutRounds;
 const planksSetOrder = ['Work', 'Rest'];
 
-const sidePlanksRounds = baseRounds;
+const sidePlanksRounds = workoutRounds;
 const sidePlanksSetOrder = ['Work R', 'Work L', 'Rest'];
 
 let dumbbellsTimerInterval = null;
-let dumbbellsSeconds = baseInterval;
+let dumbbellsSeconds = workoutInterval;
 let dumbbellsRound = 0;
 
 let planksTimerInterval = null;
-let planksSeconds = baseInterval;
+let planksSeconds = workoutInterval;
 let planksRoundsLeft = planksRounds;
 let planksIndex = 0;
 
 let sidePlanksTimerInterval = null;
-let sidePlanksSeconds = baseInterval;
+let sidePlanksSeconds = workoutInterval;
 let sidePlanksRoundsLeft = sidePlanksRounds;
 let sidePlanksIndex = 0;
 
@@ -54,10 +49,8 @@ function playBeep(frequency, duration) {
 
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
-//    oscillator.connect(ctx.destination);
 
     oscillator.type = 'sawtooth'; // sawtooth, square, triangle, sine
-//    oscillator.frequency.value = frequency;
     oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
 
     gainNode.gain.value = 0.2;
@@ -84,7 +77,7 @@ function toggleDumbbellsTimer() {
                 resetDumbbellsTimer();
                 clearInterval(dumbbellsTimerInterval);
                 dumbbellsTimerInterval = null;
-                dumbbellsSeconds = baseInterval;
+                dumbbellsSeconds = workoutInterval;
                 updateDumbbellsDisplay();
                 dumbbellsRound = (dumbbellsRound + 1) % 3;
                 if (dumbbellsRound > 0) {
@@ -121,11 +114,11 @@ function togglePlanksTimer() {
                     planksRoundsLeft--;
                 }
                 if (planksRoundsLeft > 0) {
-                    planksSeconds = baseInterval;
+                    planksSeconds = workoutInterval;
                     togglePlanksTimer();
                 } else {
                     planksRoundsLeft = planksRounds;
-                    planksSeconds = baseInterval;
+                    planksSeconds = workoutInterval;
                     header.textContent = '';
                     updatePlanksDisplay();
                 }
@@ -159,11 +152,11 @@ function toggleSidePlanksTimer() {
                 }
 
                 if (sidePlanksRoundsLeft > 0) {
-                    sidePlanksSeconds = baseInterval;
+                    sidePlanksSeconds = workoutInterval;
                     toggleSidePlanksTimer();
                 } else {
                     sidePlanksRoundsLeft = sidePlanksRounds;
-                    sidePlanksSeconds = baseInterval;
+                    sidePlanksSeconds = workoutInterval;
                     header.textContent = '';
                     updateSidePlanksDisplay();
                 }
@@ -179,7 +172,7 @@ function toggleSidePlanksTimer() {
  function resetDumbbellsTimer() {
       clearInterval(dumbbellsTimerInterval);
       dumbbellsTimerInterval = null;
-      dumbbellsSeconds = baseInterval;
+      dumbbellsSeconds = workoutInterval;
       dumbbellsRound = 0;
       document.getElementById('dumbbellsHeader').textContent = '';
       updateDumbbellsDisplay();
@@ -188,7 +181,7 @@ function toggleSidePlanksTimer() {
  function resetPlanksTimer() {
       clearInterval(planksTimerInterval);
       planksTimerInterval = null;
-      planksSeconds = baseInterval;
+      planksSeconds = workoutInterval;
       planksRoundsLeft = planksRounds;
       planksIndex = 0
       document.getElementById('planksHeader').textContent = '';
@@ -198,7 +191,7 @@ function toggleSidePlanksTimer() {
  function resetSidePlanksTimer() {
       clearInterval(sidePlanksTimerInterval);
       sidePlanksTimerInterval = null;
-      sidePlanksSeconds = baseInterval;
+      sidePlanksSeconds = workoutInterval;
       sidePlanksRoundsLeft = sidePlanksRounds;
       sidePlanksIndex = 0;
       document.getElementById('sidePlanksHeader').textContent = '';
