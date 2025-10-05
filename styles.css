@@ -10,7 +10,6 @@ body {
 .timer {
     display: flex;
     justify-content: center;
-    gap: 20px;
 }
 
 .timer button {
@@ -19,10 +18,6 @@ body {
     font-size: 48px;
     font-weight: bold;
     padding: 12px 30px;
-}
-
-.timer button:last-child {
-    font-weight: normal;
 }
 
 .timer button:hover {
