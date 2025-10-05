@@ -7,9 +7,6 @@ body {
     overflow-x: hidden;
 }
 
-.workout {
-}
-
 .timer {
     display: flex;
     justify-content: center;
@@ -19,9 +16,9 @@ body {
 .timer button {
     border-radius: 10px;
     background: #007BFF;
-    font-size: 72px;
+    font-size: 48px;
     font-weight: bold;
-    padding: 36px 48px;
+    padding: 12px 30px;
 }
 
 .timer button:last-child {
