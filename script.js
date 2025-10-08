@@ -69,6 +69,7 @@ function playSwitchTick() {
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playBeep(frequency, duration, volume, type) {
+    if (ctx.state === 'suspended') ctx.resume();
 
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
