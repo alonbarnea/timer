@@ -5,6 +5,8 @@
 body {
     margin: 0;
     overflow-x: hidden;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .timer {
@@ -15,9 +17,9 @@ body {
 .timer button {
     border-radius: 10px;
     background: #007BFF;
-    font-size: 48px;
-    font-weight: bold;
-    padding: 12px 30px;
+    font-size: 54px;
+    font-weight: 1000;
+    padding: 6px 24px;
 }
 
 .timer button:hover {
@@ -33,4 +35,8 @@ h1 {
 
 h2 {
     text-align: center;
+}
+
+.section-content {
+    display: none;
 }
