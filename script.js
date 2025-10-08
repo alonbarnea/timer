@@ -4,10 +4,10 @@ const switchInterval = 8;
 const warningSeconds = 4;
 
 const planksRounds = workoutRounds;
-const planksSetOrder = ['Work!', 'Rest!'];
+const planksSetOrder = ['Work', 'Rest'];
 
 const sidePlanksRounds = workoutRounds;
-const sidePlanksSetOrder = ['Work Side A!', 'Switch Sides!', 'Work Side B!', 'Rest!'];
+const sidePlanksSetOrder = ['Side A', 'Switch Sides', 'Side B', 'Rest'];
 
 let repsTimerInterval = null;
 let repsSeconds = workoutInterval;
@@ -55,14 +55,13 @@ function updateSidePlanksDisplay() {
 }
 
 function playTick() {
-    playBeep(frequency=300, duration=0.1, volume=0.1);
-//    playBeep(frequency=5000, duration=0.1, volume=0.1);
+    playBeep(440, 0.1, 0.1);
 //    let time_passed = workoutInterval - repsSeconds;
 //    playBeep(restFrequency + time_passed * 2, 0.1, 0.1);
 }
 
 function playLastTicks() {
-    playBeep(frequency=320, duration=0.3, volume=0.5);
+    playBeep(520, 0.4, 0.6);
 }
 
 function playSwitchTick() {
@@ -89,7 +88,7 @@ function playBeep(frequency, duration, volume) {
 function toggleRepsTimer() {
     const header = document.getElementById('repsHeader');
     if (!repsTimerInterval) {
-        header.textContent = 'Set ' + repsRound + ': Rest!';
+        header.textContent = 'Set ' + repsRound + ': Rest';
         repsTimerInterval = setInterval(() => {
             repsSeconds--;
             updateRepsDisplay();
@@ -103,12 +102,7 @@ function toggleRepsTimer() {
                 repsTimerInterval = null;
                 repsSeconds = workoutInterval;
                 repsRound = repsRound % 3 + 1;
-                if (repsRound > 1) {
-                    header.textContent = 'Set ' + repsRound + ': Work!';
-                } else {
-                    header.textContent = 'Set 1: Work!';
-                }
-
+                header.textContent = 'Set ' + repsRound + ': Work';
                 updateRepsDisplay();
             }
         }, 1000);
@@ -161,11 +155,11 @@ function toggleSidePlanksTimer() {
         sidePlanksTimerInterval = setInterval(() => {
             sidePlanksSeconds--;
             updateSidePlanksDisplay();
-            if (sidePlanksIndex === 1) {
+            if (sidePlanksIndex === 1) { // Switch
                 playSwitchTick();
             } else if (sidePlanksSeconds < warningSeconds) {
                 playLastTicks();
-            } else if (sidePlanksIndex === 3) {
+            } else if (sidePlanksIndex === 3) { // Rest
                 playTick();
             }
             if (sidePlanksSeconds === 0) {
