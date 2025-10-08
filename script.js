@@ -32,7 +32,7 @@ sectionHeaders.forEach((header) => {
         sectionContents.forEach((content) => content.style.display = 'none');
 
         // Open the clicked section
-        header.nextElementSibling.style.display = 'block'; // flex
+        header.nextElementSibling.style.display = 'block';
     });
 });
 
@@ -56,8 +56,6 @@ function updateSidePlanksDisplay() {
 
 function playTick() {
     playBeep(440, 0.1, 0.1);
-//    let time_passed = workoutInterval - repsSeconds;
-//    playBeep(restFrequency + time_passed * 2, 0.1, 0.1);
 }
 
 function playLastTicks() {
@@ -76,7 +74,7 @@ function playBeep(frequency, duration, volume) {
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
 
-    oscillator.type = 'sine'; // sawtooth, square, triangle, sine
+    oscillator.type = 'square'; // sawtooth, square, triangle, sine
     oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
 
     gainNode.gain.value = volume;
