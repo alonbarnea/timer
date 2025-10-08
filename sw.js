@@ -1,4 +1,4 @@
-const CACHE_NAME = 'timer-app-v14';
+const CACHE_NAME = 'timer-app-v15';
 const urlsToCache = [
   './',
   './index.html',

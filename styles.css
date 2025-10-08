@@ -17,13 +17,13 @@ body {
 .timer button {
     border-radius: 10px;
     background: #007BFF;
-    font-size: 60px;
-    font-weight: 1000;
-    padding: 24px 24px;
+    font-size: 72px;
+    font-weight: bold;
+    padding: 36px 24px;
 }
 
 .timer button:hover {
-    background: #0056b3;
+    background: orange;
 }
 
 h1 {
