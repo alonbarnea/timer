@@ -55,26 +55,28 @@ function updateSidePlanksDisplay() {
 }
 
 function playTick() {
-    playBeep(440, 0.1, 0.1);
+    playBeep(440, 0.1, 0.1, 'square');
 }
 
 function playLastTicks() {
-    playBeep(520, 0.4, 0.6);
+    playBeep(520, 0.4, 0.6, 'square');
 }
 
 function playSwitchTick() {
-    playBeep(4000, 0.1, 0.1);
+    playBeep(4000, 0.1, 0.1, 'sine');
 }
 
-function playBeep(frequency, duration, volume) {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playBeep(frequency, duration, volume, type) {
+
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
 
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
 
-    oscillator.type = 'square'; // sawtooth, square, triangle, sine
+    oscillator.type = type; // sawtooth, square, triangle, sine
     oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
 
     gainNode.gain.value = volume;
