@@ -1,39 +1,10 @@
-const CACHE_NAME = 'timer-app-v9';
+const CACHE_NAME = 'timer-app-v10';
 const urlsToCache = [
   './',
   './index.html',
   './script.js',
   './styles.css',
   './manifest.json',
-
- function resetRepsTimer() {
-      clearInterval(repsTimerInterval);
-      repsTimerInterval = null;
-      repsSeconds = workoutInterval;
-      repsRound = 1;
-      document.getElementById('repsHeader').textContent = 'No Set';
-      updateRepsDisplay();
-  }
-
- function resetPlanksTimer() {
-      clearInterval(planksTimerInterval);
-      planksTimerInterval = null;
-      planksSeconds = workoutInterval;
-      planksRoundsLeft = planksRounds;
-      planksIndex = 0
-      document.getElementById('planksHeader').textContent = 'No Set';
-      updatePlanksDisplay();
-  }
-
- function resetSidePlanksTimer() {
-      clearInterval(sidePlanksTimerInterval);
-      sidePlanksTimerInterval = null;
-      sidePlanksSeconds = workoutInterval;
-      sidePlanksRoundsLeft = sidePlanksRounds;
-      sidePlanksIndex = 0;
-      document.getElementById('sidePlanksHeader').textContent = 'No Set';
-      updateSidePlanksDisplay();
-  }
   './icon-192.png',
   './icon-512.png'
 ];
