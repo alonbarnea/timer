@@ -36,34 +36,31 @@ sectionHeaders.forEach((header) => {
     });
 });
 
-function updateRepsDisplay() {
-    const mins = Math.floor(repsSeconds / 60).toString().padStart(2, '0');
-    const secs = (repsSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('reps-timer').textContent = `${mins}:${secs}`;
-}
+let tickOnRest = false;
+let tickOnLast = true;
 
-function updatePlanksDisplay() {
-    const mins = Math.floor(planksSeconds / 60).toString().padStart(2, '0');
-    const secs = (planksSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('planks-timer').textContent = `${mins}:${secs}`;
-}
+document.getElementById('restTick').addEventListener('change', e => {
+    tickOnRest = e.target.checked;
+});
 
-function updateSidePlanksDisplay() {
-    const mins = Math.floor(sidePlanksSeconds / 60).toString().padStart(2, '0');
-    const secs = (sidePlanksSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('side-planks-timer').textContent = `${mins}:${secs}`;
-}
+document.getElementById('lastTick').addEventListener('change', e => {
+    tickOnLast = e.target.checked;
+});
 
 function playTick() {
-    playBeep(440, 0.1, 0.1, 'square');
+    if (tickOnRest) playBeep(440, 0.1, 0.1, 'square');
 }
 
 function playLastTicks() {
-    playBeep(520, 0.4, 0.6, 'square');
+    if (tickOnLast) playBeep(440, 0.1, 0.6, 'square');
 }
 
-function playSwitchTick() {
-    playBeep(4000, 0.1, 0.1, 'sine');
+function playSwitchTicks() {
+    playBeep(4400, 0.1, 0.2, 'square');
+}
+
+function playPressTick() {
+    playBeep(660, 0.1, 0.1, 'square');
 }
 
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -86,7 +83,26 @@ function playBeep(frequency, duration, volume, type) {
     oscillator.stop(ctx.currentTime + duration);
 }
 
+function updateRepsDisplay() {
+    const mins = Math.floor(repsSeconds / 60).toString().padStart(2, '0');
+    const secs = (repsSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('reps-timer').textContent = `${mins}:${secs}`;
+}
+
+function updatePlanksDisplay() {
+    const mins = Math.floor(planksSeconds / 60).toString().padStart(2, '0');
+    const secs = (planksSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('planks-timer').textContent = `${mins}:${secs}`;
+}
+
+function updateSidePlanksDisplay() {
+    const mins = Math.floor(sidePlanksSeconds / 60).toString().padStart(2, '0');
+    const secs = (sidePlanksSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('side-planks-timer').textContent = `${mins}:${secs}`;
+}
+
 function toggleRepsTimer() {
+    playPressTick();
     const header = document.getElementById('repsHeader');
     if (!repsTimerInterval) {
         header.textContent = 'Set ' + repsRound + ': Rest';
@@ -115,6 +131,7 @@ function toggleRepsTimer() {
 }
 
 function togglePlanksTimer() {
+    playPressTick();
     const header = document.getElementById('planksHeader');
     if (!planksTimerInterval) {
         header.textContent = 'Set ' + (planksRounds - planksRoundsLeft + 1) + ": " + planksSetOrder[planksIndex];
@@ -149,7 +166,8 @@ function togglePlanksTimer() {
      }
 }
 
-function toggleSidePlanksTimer() {
+function toggleSidePlanksTimer(pressTick = true) {
+    if (pressTick) playPressTick();
     const header = document.getElementById('sidePlanksHeader');
     if (!sidePlanksTimerInterval) {
         header.textContent = 'Set ' + (sidePlanksRounds - sidePlanksRoundsLeft + 1) + ": " + sidePlanksSetOrder[sidePlanksIndex];
@@ -157,7 +175,7 @@ function toggleSidePlanksTimer() {
             sidePlanksSeconds--;
             updateSidePlanksDisplay();
             if (sidePlanksIndex === 1) { // Switch
-                playSwitchTick();
+                playSwitchTicks();
             } else if (sidePlanksSeconds < warningSeconds) {
                 playLastTicks();
             } else if (sidePlanksIndex === 3) { // Rest
@@ -172,7 +190,7 @@ function toggleSidePlanksTimer() {
                 }
                 if (sidePlanksRoundsLeft > 0) {
                     sidePlanksSeconds = (sidePlanksIndex === 1) ? switchInterval : workoutInterval;
-                    toggleSidePlanksTimer();
+                    toggleSidePlanksTimer(false);
                 } else {
                     sidePlanksRoundsLeft = sidePlanksRounds;
                     sidePlanksSeconds = workoutInterval;

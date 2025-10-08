@@ -22,7 +22,7 @@ body {
     padding: 36px 24px;
 }
 
-.timer button:hover {
+.timer button:active {
     background: orange;
 }
 
@@ -39,4 +39,10 @@ h2 {
 
 .section-content {
     display: none;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
 }
