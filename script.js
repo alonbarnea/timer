@@ -36,6 +36,14 @@ sectionHeaders.forEach((header) => {
     });
 });
 
+const settingsHeader = document.querySelector('.section-header-settings');
+
+settingsHeader.addEventListener('click', () => {
+    const panel = settingsHeader.nextElementSibling;
+    const isHidden = getComputedStyle(panel).display === 'none';
+    panel.style.display = isHidden ? 'block' : 'none';
+});
+
 let tickOnRest = false;
 let tickOnLast = true;
 
