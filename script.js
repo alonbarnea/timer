@@ -1,7 +1,10 @@
 const workoutRounds = 3;
-const workoutInterval = 30;
-const switchInterval = 8;
-const warningSeconds = 4;
+
+let workTime = 30;
+let restTime = 45;
+let switchTime = 10;
+let tickTime = 10;
+let tickAlways = false;
 
 const planksRounds = workoutRounds;
 const planksSetOrder = ['Work', 'Rest'];
@@ -10,16 +13,16 @@ const sidePlanksRounds = workoutRounds;
 const sidePlanksSetOrder = ['Side A', 'Switch Sides', 'Side B', 'Rest'];
 
 let repsTimerInterval = null;
-let repsSeconds = workoutInterval;
+let repsSeconds = restTime;
 let repsRound = 1;
 
 let planksTimerInterval = null;
-let planksSeconds = workoutInterval;
+let planksSeconds = workTime;
 let planksRoundsLeft = planksRounds;
 let planksIndex = 0;
 
 let sidePlanksTimerInterval = null;
-let sidePlanksSeconds = workoutInterval;
+let sidePlanksSeconds = workTime;
 let sidePlanksRoundsLeft = sidePlanksRounds;
 let sidePlanksIndex = 0;
 
@@ -44,23 +47,38 @@ settingsHeader.addEventListener('click', () => {
     panel.style.display = isHidden ? 'block' : 'none';
 });
 
-let tickOnRest = false;
-let tickOnLast = true;
-
-document.getElementById('restTick').addEventListener('change', e => {
-    tickOnRest = e.target.checked;
+document.getElementById('workTime').addEventListener('change', e => {
+    workTime = e.target.value;
+    planksSeconds = workTime;
+    sidePlanksSeconds = workTime;
+    updatePlanksDisplay();
+    updateSidePlanksDisplay();
 });
 
-document.getElementById('lastTick').addEventListener('change', e => {
-    tickOnLast = e.target.checked;
+document.getElementById('restTime').addEventListener('change', e => {
+    restTime = e.target.value;
+    repsSeconds = restTime;
+    updateRepsDisplay();
+});
+
+document.getElementById('switchTime').addEventListener('change', e => {
+    switchTime = e.target.value;
+});
+
+document.getElementById('tickTime').addEventListener('change', e => {
+    tickTime = e.target.value;
+});
+
+document.getElementById('tickAlways').addEventListener('change', e => {
+    tickAlways = e.target.checked;
 });
 
 function playTick() {
-    if (tickOnRest) playBeep(440, 0.1, 0.1, 'square');
+    playBeep(440, 0.1, 0.1, 'square');
 }
 
 function playLastTicks() {
-    if (tickOnLast) playBeep(440, 0.1, 0.6, 'square');
+    playBeep(440, 0.1, 0.6, 'square');
 }
 
 function playSwitchTicks() {
@@ -117,15 +135,15 @@ function toggleRepsTimer() {
         repsTimerInterval = setInterval(() => {
             repsSeconds--;
             updateRepsDisplay();
-            if (repsSeconds > warningSeconds) {
-                playTick();
+            if (repsSeconds > tickTime) {
+                if (tickAlways) playTick();
             } else {
                 playLastTicks();
             }
             if (repsSeconds === 0) {
                 clearInterval(repsTimerInterval);
                 repsTimerInterval = null;
-                repsSeconds = workoutInterval;
+                repsSeconds = restTime;
                 repsRound = repsRound % 3 + 1;
                 header.textContent = 'Set ' + repsRound + ': Work';
                 updateRepsDisplay();
@@ -146,8 +164,10 @@ function togglePlanksTimer() {
         planksTimerInterval = setInterval(() => {
             planksSeconds--;
             updatePlanksDisplay();
-            if (planksSeconds < warningSeconds) {
+            if (planksSeconds < tickTime) {
                 playLastTicks();
+            } else {
+                if (tickAlways) playTick();
             }
             if (planksSeconds === 0) {
                 clearInterval(planksTimerInterval);
@@ -155,13 +175,14 @@ function togglePlanksTimer() {
                 planksIndex = 1 - planksIndex;
                 if (planksIndex === 0) {
                     planksRoundsLeft--;
+                    planksSeconds = workTime;
+                } else {
+                    planksSeconds = restTime;
                 }
                 if (planksRoundsLeft > 0) {
-                    planksSeconds = workoutInterval;
                     togglePlanksTimer();
                 } else {
                     planksRoundsLeft = planksRounds;
-                    planksSeconds = workoutInterval;
                     header.textContent = 'Planks Done';
                     updatePlanksDisplay();
                 }
@@ -184,10 +205,10 @@ function toggleSidePlanksTimer(pressTick = true) {
             updateSidePlanksDisplay();
             if (sidePlanksIndex === 1) { // Switch
                 playSwitchTicks();
-            } else if (sidePlanksSeconds < warningSeconds) {
+            } else if (sidePlanksSeconds < tickTime) {
                 playLastTicks();
-            } else if (sidePlanksIndex === 3) { // Rest
-                playTick();
+            } else {
+                if (tickAlways) playTick();
             }
             if (sidePlanksSeconds === 0) {
                 clearInterval(sidePlanksTimerInterval);
@@ -195,13 +216,19 @@ function toggleSidePlanksTimer(pressTick = true) {
                 sidePlanksIndex = (sidePlanksIndex + 1) % 4;
                 if (sidePlanksIndex === 0) {
                     sidePlanksRoundsLeft--;
+                    sidePlanksSeconds = workTime;
+                } else if (sidePlanksIndex === 1) {
+                    sidePlanksSeconds = switchTime;
+                } else if (sidePlanksIndex === 2) {
+                    sidePlanksSeconds = workTime;
+                }
+                else if (sidePlanksIndex === 3) {
+                    sidePlanksSeconds = restTime;
                 }
                 if (sidePlanksRoundsLeft > 0) {
-                    sidePlanksSeconds = (sidePlanksIndex === 1) ? switchInterval : workoutInterval;
                     toggleSidePlanksTimer(false);
                 } else {
                     sidePlanksRoundsLeft = sidePlanksRounds;
-                    sidePlanksSeconds = workoutInterval;
                     header.textContent = 'Side Planks Done';
                     updateSidePlanksDisplay();
                 }

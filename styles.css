@@ -31,10 +31,12 @@ h1 {
     text-align: center;
     color: #FFFFFF;
     background-color: #1D3557;
+    font-size: 36px;
 }
 
 h2 {
     text-align: center;
+    font-size: 36px;
 }
 
 .section-content {

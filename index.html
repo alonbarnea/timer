@@ -46,10 +46,19 @@
             <section class="section-content">
                 <div class="settings">
                     <label>
-                        <input type="checkbox" id="restTick"> Tick every second on rest
+                        <input type="number" id="workTime" value="30" min="1" max="60"> Workout time
                     </label>
                     <label>
-                        <input type="checkbox" id="lastTick" checked> Tick last 5 seconds
+                        <input type="number" id="restTime" value="45" min="1" max="60"> Rest time
+                    </label>
+                    <label>
+                        <input type="number" id="switchTime" value="10" min="1" max="60"> Switch time
+                    </label>
+                    <label>
+                        <input type="number" id="tickTime" value="10" min="1" max="60"> Tick last X seconds
+                    </label>
+                    <label>
+                        <input type="checkbox" id="tickAlways"> Tick every second
                     </label>
                 </div>
             </section>
