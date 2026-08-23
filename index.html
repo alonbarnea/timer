@@ -19,25 +19,25 @@
             <section class="section-content">
                 <h2 id="repsHeader">Start</h2>
                 <div class="timer">
-                    <button id="reps-timer" onclick="toggleRepsTimer()">1</button>
+                    <button id="reps-timer" onclick="toggleRepsTimer()">30</button>
                 </div>
             </section>
         </section>
         <section class="workout">
-            <h1 class="section-header">Planks</h1>
+            <h1 class="section-header">Intervals</h1>
             <section class="section-content">
                 <h2 id="planksHeader">Start</h2>
                 <div class="timer">
-                    <button id="planks-timer" onclick="togglePlanksTimer()">1</button>
+                    <button id="planks-timer" onclick="togglePlanksTimer()">30</button>
                 </div>
             </section>
         </section>
         <section class="workout">
-            <h1 class="section-header">Side Planks</h1>
+            <h1 class="section-header">2-Side Intervals</h1>
             <section class="section-content">
                 <h2 id="sidePlanksHeader">Start</h2>
                 <div class="timer">
-                    <button id="side-planks-timer" onclick="toggleSidePlanksTimer()">1</button>
+                    <button id="side-planks-timer" onclick="toggleSidePlanksTimer()">30</button>
                 </div>
             </section>
         </section>
@@ -45,21 +45,56 @@
             <h1 class="section-header-settings">Workout Timer</h1>
             <section class="section-content">
                 <div class="settings">
-                    <label>
-                        <input type="number" id="workTime" value="30" min="1" max="60"> Workout time
-                    </label>
-                    <label>
-                        <input type="number" id="restTime" value="45" min="1" max="60"> Rest time
-                    </label>
-                    <label>
-                        <input type="number" id="switchTime" value="10" min="1" max="60"> Switch time
-                    </label>
-                    <label>
-                        <input type="number" id="tickTime" value="10" min="1" max="60"> Tick last X seconds
-                    </label>
-                    <label>
-                        <input type="checkbox" id="tickAlways"> Tick every second
-                    </label>
+                    <!-- Group 1: Timing & Intervals -->
+                    <fieldset class="settings">
+                        <label>
+                            <input type="number" id="sets" value="3" min="1" max="1000"> Number of sets
+                        </label>
+                        <label>
+                            <input type="number" id="restTime" value="30" min="0" max="1000"> Rest seconds
+                        </label>
+                        <label>
+                            <input type="number" id="workTime" value="30" min="1" max="1000"> Work seconds
+                        </label>
+                        <label>
+                            <input type="number" id="switchTime" value="5" min="0" max="1000"> Switch seconds
+                        </label>                      
+                    </fieldset>
+
+                    <!-- Group 2: Audio & Behavior -->
+                    <fieldset class="settings">
+                        <label>
+                            <input type="number" id="tickVolume" value="50" min="0" max="100"> Beep volume [0 - 100]
+                        </label>
+                        <label>
+                            <input type="number" id="tickLastSeconds" value="2" min="0" max="1000"> Beep last seconds
+                        </label>
+                        <label>
+                            <input type="number" id="tickToneLastSecond" value="440" min="20" max="2000"> Beep tons [20 - 20,000]
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="tickAlways">
+                            <span class="slider"></span>
+                            <span class="label-text">Beep every second</span>
+                        </label>  
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="tickOnStartStop" checked>
+                            <span class="slider"></span>
+                            <span class="label-text">Beep on press button</span>
+                        </label>
+                        <label>
+                            <input type="number" id="tickToneOnStartStop" value="660" min="20" max="2000"> Button Beep tone [20 - 20,000]
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="tickOnSwitch" checked>
+                            <span class="slider"></span>
+                            <span class="label-text">Beep when switching</span>
+                        </label>
+                        <label>
+                            <input type="number" id="tickToneWhenSwitching" value="4400" min="20" max="2000"> Switch Beep tone [20 - 20,000]
+                        </label>                      
+                    </fieldset>
+                    <button type="button" id="resetDefaultsBtn" class="reset-btn">Reset to App Defaults</button>
                 </div>
             </section>
         </section>

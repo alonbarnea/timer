@@ -1,29 +1,39 @@
-const workoutRounds = 3;
+let workoutRounds = parseInt(document.getElementById('sets').value);
 
-let workTime = 30;
-let restTime = 45;
-let switchTime = 10;
-let tickTime = 10;
-let tickAlways = false;
+let restTime = parseInt(document.getElementById('restTime').value);
+let workTime = parseInt(document.getElementById('workTime').value);
+let switchTime = parseInt(document.getElementById('switchTime').value);
 
-const planksRounds = workoutRounds;
+let tickVolume = parseInt(document.getElementById('tickVolume').value);
+
+let tickLastSeconds = parseInt(document.getElementById('tickLastSeconds').value);
+let tickToneLastSecond = parseInt(document.getElementById('tickToneLastSecond').value);
+let tickAlways = document.getElementById('tickAlways').checked;
+
+let tickOnStartStop = document.getElementById('tickOnStartStop').checked;
+let tickToneOnStartStop = parseInt(document.getElementById('tickToneOnStartStop').value);
+
+let tickOnSwitch = document.getElementById('tickOnSwitch').checked;
+let tickToneWhenSwitching = parseInt(document.getElementById('tickToneWhenSwitching').value);
+
 const planksSetOrder = ['Work', 'Rest'];
-
-const sidePlanksRounds = workoutRounds;
 const sidePlanksSetOrder = ['Side A', 'Switch Sides', 'Side B', 'Rest'];
 
 let repsTimerInterval = null;
+let repsRounds = workoutRounds;
 let repsSeconds = restTime;
 let repsRound = 1;
 
 let planksTimerInterval = null;
 let planksSeconds = workTime;
-let planksRoundsLeft = planksRounds;
+let planksRounds = workoutRounds;
+let planksRoundsLeft = workoutRounds;
 let planksIndex = 0;
 
 let sidePlanksTimerInterval = null;
 let sidePlanksSeconds = workTime;
-let sidePlanksRoundsLeft = sidePlanksRounds;
+let sidePlanksRounds = workoutRounds;
+let sidePlanksRoundsLeft = workoutRounds;
 let sidePlanksIndex = 0;
 
 const sectionHeaders = document.querySelectorAll('.section-header');
@@ -47,46 +57,95 @@ settingsHeader.addEventListener('click', () => {
     panel.style.display = isHidden ? 'block' : 'none';
 });
 
-document.getElementById('workTime').addEventListener('change', e => {
-    workTime = e.target.value;
-    planksSeconds = workTime;
-    sidePlanksSeconds = workTime;
-    updatePlanksDisplay();
-    updateSidePlanksDisplay();
+document.getElementById('sets').addEventListener('change', e => {
+    workoutRounds = e.target.value;
+    planksRounds = workoutRounds;
+    planksRoundsLeft = workoutRounds;
+    sidePlanksRounds = workoutRounds;
+    sidePlanksRoundsLeft = workoutRounds;
+    localStorage.setItem('workoutRounds', workoutRounds);
 });
 
 document.getElementById('restTime').addEventListener('change', e => {
     restTime = e.target.value;
     repsSeconds = restTime;
+    localStorage.setItem('restTime', restTime);
     updateRepsDisplay();
+});
+
+document.getElementById('workTime').addEventListener('change', e => {
+    workTime = e.target.value;
+    planksSeconds = workTime;
+    sidePlanksSeconds = workTime;
+    localStorage.setItem('workTime', workTime);
+    updatePlanksDisplay();
+    updateSidePlanksDisplay();
 });
 
 document.getElementById('switchTime').addEventListener('change', e => {
     switchTime = e.target.value;
+    localStorage.setItem('switchTime', switchTime);
 });
 
-document.getElementById('tickTime').addEventListener('change', e => {
-    tickTime = e.target.value;
+document.getElementById('tickVolume').addEventListener('change', e => {
+    tickVolume = e.target.value;
+    localStorage.setItem('tickVolume', tickVolume);
+});
+
+document.getElementById('tickLastSeconds').addEventListener('change', e => {
+    tickLastSeconds = e.target.value;
+    localStorage.setItem('tickLastSeconds', tickLastSeconds);
+});
+
+document.getElementById('tickToneLastSecond').addEventListener('change', e => {
+    tickToneLastSecond = e.target.value;
+    localStorage.setItem('tickToneLastSecond', tickToneLastSecond);
 });
 
 document.getElementById('tickAlways').addEventListener('change', e => {
     tickAlways = e.target.checked;
+    localStorage.setItem('tickAlways', tickAlways);
+});
+
+document.getElementById('tickOnStartStop').addEventListener('change', e => {
+    tickOnStartStop = e.target.checked;
+    localStorage.setItem('tickOnStartStop', tickOnStartStop);
+});
+
+document.getElementById('tickToneOnStartStop').addEventListener('change', e => {
+    tickToneOnStartStop = e.target.value;
+    localStorage.setItem('tickToneOnStartStop', tickToneOnStartStop);
+});
+
+document.getElementById('tickOnSwitch').addEventListener('change', e => {
+    tickOnSwitch = e.target.checked;
+    localStorage.setItem('tickOnSwitch', tickOnSwitch);
+});
+
+document.getElementById('tickToneWhenSwitching').addEventListener('change', e => {
+    tickToneWhenSwitching = e.target.value;
+    localStorage.setItem('tickToneWhenSwitching', tickToneWhenSwitching);
+});
+
+document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+    localStorage.clear();
+    location.reload();
 });
 
 function playTick() {
-    playBeep(440, 0.1, 0.1, 'square');
+    playBeep(tickToneLastSecond, 0.1, tickVolume / 1000, 'square');
 }
 
 function playLastTicks() {
-    playBeep(440, 0.1, 0.6, 'square');
+    playBeep(tickToneLastSecond, 0.1, 6 * tickVolume / 1000, 'square');
 }
 
 function playSwitchTicks() {
-    playBeep(4400, 0.1, 0.2, 'square');
+    playBeep(tickToneWhenSwitching, 0.1, 2 * tickVolume / 1000, 'square');
 }
 
 function playPressTick() {
-    playBeep(660, 0.1, 0.1, 'square');
+    playBeep(tickToneOnStartStop, 0.1, tickVolume / 1000, 'square');
 }
 
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -128,14 +187,17 @@ function updateSidePlanksDisplay() {
 }
 
 function toggleRepsTimer() {
-    playPressTick();
+    if (tickOnStartStop) {
+        playPressTick();
+    }
+
     const header = document.getElementById('repsHeader');
     if (!repsTimerInterval) {
         header.textContent = 'Set ' + repsRound + ': Rest';
         repsTimerInterval = setInterval(() => {
             repsSeconds--;
             updateRepsDisplay();
-            if (repsSeconds > tickTime) {
+            if (repsSeconds >= tickLastSeconds) {
                 if (tickAlways) playTick();
             } else {
                 playLastTicks();
@@ -144,7 +206,7 @@ function toggleRepsTimer() {
                 clearInterval(repsTimerInterval);
                 repsTimerInterval = null;
                 repsSeconds = restTime;
-                repsRound = repsRound % 3 + 1;
+                repsRound = repsRound % workoutRounds + 1;
                 header.textContent = 'Set ' + repsRound + ': Work';
                 updateRepsDisplay();
             }
@@ -157,14 +219,17 @@ function toggleRepsTimer() {
 }
 
 function togglePlanksTimer() {
-    playPressTick();
+    if (tickOnStartStop) {
+        playPressTick();
+    }
+
     const header = document.getElementById('planksHeader');
     if (!planksTimerInterval) {
         header.textContent = 'Set ' + (planksRounds - planksRoundsLeft + 1) + ": " + planksSetOrder[planksIndex];
         planksTimerInterval = setInterval(() => {
             planksSeconds--;
             updatePlanksDisplay();
-            if (planksSeconds < tickTime) {
+            if (planksSeconds < tickLastSeconds) {
                 playLastTicks();
             } else {
                 if (tickAlways) playTick();
@@ -183,7 +248,7 @@ function togglePlanksTimer() {
                     togglePlanksTimer();
                 } else {
                     planksRoundsLeft = planksRounds;
-                    header.textContent = 'Planks Done';
+                    header.textContent = 'Done';
                     updatePlanksDisplay();
                 }
             }
@@ -196,7 +261,10 @@ function togglePlanksTimer() {
 }
 
 function toggleSidePlanksTimer(pressTick = true) {
-    if (pressTick) playPressTick();
+    if (tickOnStartStop) {
+        playPressTick();
+    }
+
     const header = document.getElementById('sidePlanksHeader');
     if (!sidePlanksTimerInterval) {
         header.textContent = 'Set ' + (sidePlanksRounds - sidePlanksRoundsLeft + 1) + ": " + sidePlanksSetOrder[sidePlanksIndex];
@@ -204,8 +272,10 @@ function toggleSidePlanksTimer(pressTick = true) {
             sidePlanksSeconds--;
             updateSidePlanksDisplay();
             if (sidePlanksIndex === 1) { // Switch
-                playSwitchTicks();
-            } else if (sidePlanksSeconds < tickTime) {
+                if(tickOnSwitch) {
+                    playSwitchTicks();
+                }
+            } else if (sidePlanksSeconds < tickLastSeconds) {
                 playLastTicks();
             } else {
                 if (tickAlways) playTick();
@@ -229,7 +299,7 @@ function toggleSidePlanksTimer(pressTick = true) {
                     toggleSidePlanksTimer(false);
                 } else {
                     sidePlanksRoundsLeft = sidePlanksRounds;
-                    header.textContent = 'Side Planks Done';
+                    header.textContent = 'Done';
                     updateSidePlanksDisplay();
                 }
             }
@@ -240,6 +310,51 @@ function toggleSidePlanksTimer(pressTick = true) {
         header.textContent = 'PAUSED';
       }
 }
+
+function loadPreferences() {
+    // Helper that sets the input from storage (if it exists) and returns its current value
+    const loadAndGet = (id) => {
+        const saved = localStorage.getItem(id);
+        const input = document.getElementById(id);
+        if (saved !== null) {
+            input.value = saved;
+        }
+        // Return whatever value the input currently holds (from HTML or localStorage)
+        return parseInt(input.value);
+    };
+
+    const loadAndGetBoolean = (id) => {
+        const saved = localStorage.getItem(id);
+        const input = document.getElementById(id);
+        if (saved !== null) {
+            input.checked = (saved === 'true');
+        }
+        return input.checked;
+    };
+
+    // 1. Load inputs & assign your global variables using HTML as the source of truth
+    workoutRounds = loadAndGet('sets');
+
+    workTime = loadAndGet('workTime');
+    restTime = loadAndGet('restTime');
+    switchTime = loadAndGet('switchTime');
+
+    tickVolume = loadAndGet('tickVolume');
+
+    tickLastSeconds = loadAndGet('tickLastSeconds');
+    tickToneLastSecond = loadAndGet('tickToneLastSecond');
+    
+    tickAlways = loadAndGetBoolean('tickAlways');
+
+    tickOnStartStop = loadAndGetBoolean('tickOnStartStop');
+    tickToneOnStartStop = loadAndGet('tickToneOnStartStop');
+
+    tickOnSwitch = loadAndGetBoolean('tickOnSwitch');
+    tickToneWhenSwitching = loadAndGet('tickToneWhenSwitching');
+}
+
+// Run on startup
+loadPreferences();
 
 updateRepsDisplay();
 updatePlanksDisplay();
